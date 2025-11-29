@@ -1381,6 +1381,28 @@ class TableRecordUpdateTests: GRDBTestCase {
         }
     }
 
+    func testMultipleAssignments_DatabaseComponents_builder() throws {
+        try makeDatabaseQueue().write { db in
+            try Player.createTable(db)
+
+            try Player.updateAll(db) {
+                $0.score.set(to: 0)
+                $0.bonus.set(to: 1)
+            }
+            XCTAssertEqual(self.lastSQLQuery, """
+                UPDATE "player" SET "score" = 0, "bonus" = 1
+                """)
+
+            try Player.all().updateAll(db) {
+                $0.score.set(to: 0)
+                $0.bonus.set(to: 1)
+            }
+            XCTAssertEqual(self.lastSQLQuery, """
+                UPDATE "player" SET "score" = 0, "bonus" = 1
+                """)
+        }
+    }
+
     func testUpdateAllWithoutAssignmentDoesNotAccessTheDatabase() throws {
         try makeDatabaseQueue().write { db in
             try Player.createTable(db)

@@ -1060,6 +1060,7 @@ extension QueryInterfaceRequest {
     /// - parameter assignment: A closure that returns an assignment.
     /// - returns: The number of updated rows.
     /// - throws: A ``DatabaseError`` whenever an SQLite error occurs.
+    @_disfavoredOverload
     @discardableResult
     public func updateAll(
         _ db: Database,
@@ -1095,6 +1096,7 @@ extension QueryInterfaceRequest {
     ///   column assignments.
     /// - returns: The number of updated rows.
     /// - throws: A ``DatabaseError`` whenever an SQLite error occurs.
+    @_disfavoredOverload
     @discardableResult
     public func updateAll(
         _ db: Database,
@@ -1106,6 +1108,41 @@ extension QueryInterfaceRequest {
         try updateAll(db, onConflict: conflictResolution, assignments(RowDecoder.databaseComponents))
     }
     
+    /// Updates matching rows, and returns the number of updated rows.
+    ///
+    /// For example:
+    ///
+    /// ```swift
+    /// struct Player: TableRecord {
+    ///     enum Columns {
+    ///         static let score = Column("score")
+    ///     }
+    /// }
+    ///
+    /// try dbQueue.write { db in
+    ///     // UPDATE player SET score = 0
+    ///     let request = Player.all()
+    ///     try request.updateAll(db) { $0.score.set(to: 0) }
+    /// }
+    /// ```
+    ///
+    /// - parameter db: A database connection.
+    /// - parameter conflictResolution: A policy for conflict resolution.
+    /// - parameter assignments: A closure that returns an array of
+    ///   column assignments.
+    /// - returns: The number of updated rows.
+    /// - throws: A ``DatabaseError`` whenever an SQLite error occurs.
+    @discardableResult
+    public func updateAll(
+        _ db: Database,
+        onConflict conflictResolution: Database.ConflictResolution? = nil,
+        @GRDBArrayBuilder<ColumnAssignment> _ assignments: (DatabaseComponents) throws -> [ColumnAssignment]
+    ) throws -> Int
+    where RowDecoder: TableRecord
+    {
+        try updateAll(db, onConflict: conflictResolution, assignments(RowDecoder.databaseComponents))
+    }
+
     /// Updates matching rows, and returns the number of updated rows.
     ///
     /// For example:
