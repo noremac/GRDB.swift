@@ -2785,19 +2785,19 @@ private struct StatementCopyRowImpl: RowImpl {
 private struct StatementRowImpl: RowImpl {
     let statement: Statement
     let sqliteStatement: SQLiteStatement
-    let lowercaseColumnIndexes: [String: Int]
+    let lowercaseColumnIndexes: [String]
     
     init(sqliteStatement: SQLiteStatement, statement: Statement) {
         self.statement = statement
         self.sqliteStatement = sqliteStatement
         // Optimize row[columnName]
-        let lowercaseColumnNames = (0..<sqlite3_column_count(sqliteStatement))
-            .map { String(cString: sqlite3_column_name(sqliteStatement, CInt($0))).lowercased() }
-        self.lowercaseColumnIndexes = Dictionary(
-            lowercaseColumnNames
-                .enumerated()
-                .map { ($0.element, $0.offset) },
-            uniquingKeysWith: { (left, _) in left }) // keep leftmost indexes
+        self.lowercaseColumnIndexes = (0..<sqlite3_column_count(sqliteStatement))
+            .reduce(into: [], { acc, index in
+                let column = String(cString: sqlite3_column_name(sqliteStatement, index)).lowercased()
+                if !acc.contains(column) {
+                    acc.append(column) // keep leftmost indexes
+                }
+            })
     }
     
     var count: Int {
@@ -2844,10 +2844,10 @@ private struct StatementRowImpl: RowImpl {
     }
     
     func index(forColumn name: String) -> Int? {
-        if let index = lowercaseColumnIndexes[name] {
+        if let index = lowercaseColumnIndexes.firstIndex(of: name) {
             return index
         }
-        return lowercaseColumnIndexes[name.lowercased()]
+        return lowercaseColumnIndexes.firstIndex(of: name.lowercased())
     }
     
     func copiedRow(_ row: Row) -> Row {
