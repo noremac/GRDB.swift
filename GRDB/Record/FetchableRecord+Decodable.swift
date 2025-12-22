@@ -232,6 +232,118 @@ private struct _RowDecoder<R: FetchableRecord>: Decoder {
         // swiftlint:enable line_length
         // swiftlint:enable comma
         
+        func decodeIfPresent(_ type: Bool.Type, forKey key: Key) throws -> Bool? {
+            if let column = try? decodeColumn(forKey: key) {
+                return try decoder.row.decodeIfPresent(forColumn: column)
+            } else {
+                return nil
+            }
+        }
+        
+        func decodeIfPresent(_ type: Int.Type, forKey key: Key) throws -> Int? {
+            if let column = try? decodeColumn(forKey: key) {
+                return try decoder.row.decodeIfPresent(forColumn: column)
+            } else {
+                return nil
+            }
+        }
+        
+        func decodeIfPresent(_ type: Int8.Type, forKey key: Key) throws -> Int8? {
+            if let column = try? decodeColumn(forKey: key) {
+                return try decoder.row.decodeIfPresent(forColumn: column)
+            } else {
+                return nil
+            }
+        }
+        
+        func decodeIfPresent(_ type: Int16.Type, forKey key: Key) throws -> Int16? {
+            if let column = try? decodeColumn(forKey: key) {
+                return try decoder.row.decodeIfPresent(forColumn: column)
+            } else {
+                return nil
+            }
+        }
+        
+        func decodeIfPresent(_ type: Int32.Type, forKey key: Key) throws -> Int32? {
+            if let column = try? decodeColumn(forKey: key) {
+                return try decoder.row.decodeIfPresent(forColumn: column)
+            } else {
+                return nil
+            }
+        }
+        
+        func decodeIfPresent(_ type: Int64.Type, forKey key: Key) throws -> Int64? {
+            if let column = try? decodeColumn(forKey: key) {
+                return try decoder.row.decodeIfPresent(forColumn: column)
+            } else {
+                return nil
+            }
+        }
+        
+        func decodeIfPresent(_ type: UInt.Type, forKey key: Key) throws -> UInt? {
+            if let column = try? decodeColumn(forKey: key) {
+                return try decoder.row.decodeIfPresent(forColumn: column)
+            } else {
+                return nil
+            }
+        }
+        
+        func decodeIfPresent(_ type: UInt8.Type, forKey key: Key) throws -> UInt8? {
+            if let column = try? decodeColumn(forKey: key) {
+                return try decoder.row.decodeIfPresent(forColumn: column)
+            } else {
+                return nil
+            }
+        }
+        
+        func decodeIfPresent(_ type: UInt16.Type, forKey key: Key) throws -> UInt16? {
+            if let column = try? decodeColumn(forKey: key) {
+                return try decoder.row.decodeIfPresent(forColumn: column)
+            } else {
+                return nil
+            }
+        }
+        
+        func decodeIfPresent(_ type: UInt32.Type, forKey key: Key) throws -> UInt32? {
+            if let column = try? decodeColumn(forKey: key) {
+                return try decoder.row.decodeIfPresent(forColumn: column)
+            } else {
+                return nil
+            }
+        }
+        
+        func decodeIfPresent(_ type: UInt64.Type, forKey key: Key) throws -> UInt64? {
+            if let column = try? decodeColumn(forKey: key) {
+                return try decoder.row.decodeIfPresent(forColumn: column)
+            } else {
+                return nil
+            }
+        }
+        
+        func decodeIfPresent(_ type: Float.Type, forKey key: Key) throws -> Float?  {
+            if let column = try? decodeColumn(forKey: key) {
+                return try decoder.row.decodeIfPresent(forColumn: column)
+            } else {
+                return nil
+            }
+        }
+        
+        func decodeIfPresent(_ type: Double.Type, forKey key: Key) throws -> Double? {
+            if let column = try? decodeColumn(forKey: key) {
+                return try decoder.row.decodeIfPresent(forColumn: column)
+            } else {
+                return nil
+            }
+        }
+        
+        func decodeIfPresent(_ type: String.Type, forKey key: Key) throws -> String? {
+            if let column = try? decodeColumn(forKey: key) {
+                return try decoder.row.decodeIfPresent(forColumn: column)
+            } else {
+                return nil
+            }
+        }
+        
         private func decodeColumn(forKey key: Key) throws -> String {
             guard let _columnForKey else {
                 return key.stringValue

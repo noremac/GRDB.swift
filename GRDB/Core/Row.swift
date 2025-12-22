@@ -1348,6 +1348,42 @@ extension Row {
         try decode(type, forColumn: column.name)
     }
     
+    @inline(__always)
+    @inlinable
+    public func decodeIfPresent<Value: DatabaseValueConvertible & StatementColumnConvertible>(
+        _ type: Value.Type = Value.self,
+        atIndex index: Int)
+    throws -> Value?
+    {
+        _checkIndex(index)
+        return try Value.fastDecodeIfPresent(fromRow: self, atUncheckedIndex: index)
+    }
+    
+    @inlinable
+    public func decodeIfPresent<Value: DatabaseValueConvertible & StatementColumnConvertible>(
+        _ type: Value.Type = Value.self,
+        forColumn columnName: String)
+    throws -> Value?
+    {
+        guard let index = index(forColumn: columnName) else {
+            if let value = Value.fromMissingColumn() {
+                return value
+            } else {
+                return nil
+            }
+        }
+        return try Value.fastDecodeIfPresent(fromRow: self, atUncheckedIndex: index)
+    }
+    
+    @inlinable
+    public func decodeIfPresent<Value: DatabaseValueConvertible & StatementColumnConvertible>(
+        _ type: Value.Type = Value.self,
+        forColumn column: some ColumnExpression)
+    throws -> Value?
+    {
+        try decodeIfPresent(type, forColumn: column.name)
+    }
+    
     // Support for fast decoding in scoped rows
     @usableFromInline
     func fastDecode<Value: DatabaseValueConvertible & StatementColumnConvertible>(
